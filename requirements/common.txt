@@ -1,0 +1,1 @@
+flask flask-script Flask-SQLAlchemy Flask-Migrate Flask-WTF Flask-Bootstrap WTForms SQLAlchemy wheel flask-login flask-moment ForgeryPy gunicorn
