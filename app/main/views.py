@@ -2,19 +2,25 @@
 from flask import render_template, request, current_app, redirect,\
     url_for, flash
 from . import main
+from flask_login import current_user
 from ..models import Article, ArticleType, article_types, Comment, \
     Follow, User, Source, BlogView
 from .forms import CommentForm
 from .. import db
 
-
 @main.route('/')
 def index():
     BlogView.add_view(db)
     page = request.args.get('page', 1, type=int)
-    pagination = Article.query.order_by(Article.create_time.desc()).paginate(
+    if current_user.is_authenticated:
+        pagination = Article.query.order_by(Article.create_time.desc()).paginate(
             page, per_page=current_app.config['ARTICLES_PER_PAGE'],
             error_out=False)
+    else:
+        pagination = Article.query.filter(Article.is_published is not 1).order_by(Article.create_time.desc()).paginate(
+            page, per_page=current_app.config['ARTICLES_PER_PAGE'],
+            error_out=False)
+        
     articles = pagination.items
     return render_template('index.html', articles=articles,
                            pagination=pagination, endpoint='.index')
@@ -24,10 +30,17 @@ def index():
 def articleTypes(id):
     BlogView.add_view(db)
     page = request.args.get('page', 1, type=int)
-    pagination = ArticleType.query.get_or_404(id).articles.order_by(
+    if current_user.is_authenticated:
+        pagination = ArticleType.query.get_or_404(id).articles.order_by(
             Article.create_time.desc()).paginate(
             page, per_page=current_app.config['ARTICLES_PER_PAGE'],
             error_out=False)
+    else:
+        pagination = ArticleType.query.get_or_404(id).articles.filter(Article.is_published is not 1).order_by(
+            Article.create_time.desc()).paginate(
+            page, per_page=current_app.config['ARTICLES_PER_PAGE'],
+            error_out=False)
+
     articles = pagination.items
     return render_template('index.html', articles=articles,
                            pagination=pagination, endpoint='.articleTypes',
