@@ -8,12 +8,20 @@
         <form class="submit-comment-form" id="submit-comment-form" method="post" action="">
             {{ form.csrf_token }}
             {{ form.follow(type='hidden') }}
-            {{ form.name.label }}{{ form.name(class='form-control', required='', value=current_user.username) }}
-            {{ form.email.label }}{{ form.email(class='form-control', required='', value=current_user.email) }}
-            {{ form.content.label }}{{ form.content(class='form-control', required='') }}
+            <div class="col-xs-12" style="margin-bottom: 20px">
+                {{ form.name.label }}{{ form.name(class='form-control', required='', value=current_user.username) }}
+            </div>
+            <div class="col-xs-12" style="margin-bottom: 20px">
+                {{ form.email.label }}{{ form.email(class='form-control', required='', value=current_user.email) }}
+            </div>
+            <div class="col-xs-12" style="margin-bottom: 20px">
+                {{ form.content.label }}{{ form.content(class='form-control', required='') }}
+            </div>
+            <div class="col-xs-12">
             <button type="submit" class="btn btn-default">
                 提交
             </button>
+            </div>
         </form>
     </div>
 </div>

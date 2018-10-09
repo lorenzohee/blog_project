@@ -1,6 +1,16 @@
 <div class="article-entry-header">
     <h3 class="article-entry-title">
         <a href="{{ url_for('.articleDetails', id=article.id) }}">{{ article.title }}</a>
+        {% if current_user.is_authenticated %}
+        <span class="article-edit">
+            <a href="{{ url_for('admin.editArticles', id=article.id) }}">
+                <button type="button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                    编辑
+                </button>
+            </a>
+        </span>
+        {% endif %}
     </h3>
 </div>
 <div class="article-entry-info">

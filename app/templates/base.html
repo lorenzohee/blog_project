@@ -36,7 +36,7 @@
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li class=""><a href="/"><span class="glyphicon glyphicon-home"> 首页</span></a></li>
+                    <li class=""><a href="/">首页</a></li>
                     {% for menu in Menu.query.order_by(Menu.order.asc()).all() %}
                         {% if menu.types.count() %}
                             <li class="dropdown">
@@ -92,7 +92,7 @@
     <div class="content">
         <div class="container">
             <div class="row">
-                <div class="col-md-8 article">
+                <div class="col-md-12 article">
                     {% for category, message in get_flashed_messages(with_categories=true) %}
                         <div class="alert alert-{{ category }} alert-dismissable">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -102,7 +102,7 @@
                     {% block content %}
                     {% endblock %}
                 </div>
-                <div class="col-md-4 blog_nav">
+                <div class="col-md-4 blog_nav" style="display: none;">
                     {% block blog_nav_plugin %}
                         {% for plugin in Plugin.query.order_by(Plugin.order.asc()).all() %}
                             {% if plugin.disabled != True %}

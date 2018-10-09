@@ -297,3 +297,10 @@ ul.comments .disabled-comment-admin-btn {
 .login-page {
     margin-top: 200px;
 }
+
+.label{
+    display: inline-block;
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 0;
+}

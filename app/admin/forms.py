@@ -13,7 +13,7 @@ class CommonForm(FlaskForm):
 
 class SubmitArticlesForm(CommonForm):
     title = StringField(u'标题', validators=[DataRequired(), Length(1, 64)])
-    content = TextAreaField(u'博文内容', validators=[DataRequired()])
+    content = TextAreaField(u'博文内容')
     summary = TextAreaField(u'博文摘要', validators=[DataRequired()])
 
 
