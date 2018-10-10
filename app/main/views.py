@@ -17,7 +17,7 @@ def index():
             page, per_page=current_app.config['ARTICLES_PER_PAGE'],
             error_out=False)
     else:
-        pagination = Article.query.filter(Article.is_published is not 1).order_by(Article.create_time.desc()).paginate(
+        pagination = Article.query.filter(Article.is_published == 2).order_by(Article.create_time.desc()).paginate(
             page, per_page=current_app.config['ARTICLES_PER_PAGE'],
             error_out=False)
         
@@ -36,7 +36,7 @@ def articleTypes(id):
             page, per_page=current_app.config['ARTICLES_PER_PAGE'],
             error_out=False)
     else:
-        pagination = ArticleType.query.get_or_404(id).articles.filter(Article.is_published is not 1).order_by(
+        pagination = ArticleType.query.get_or_404(id).articles.filter(Article.is_published == 2).order_by(
             Article.create_time.desc()).paginate(
             page, per_page=current_app.config['ARTICLES_PER_PAGE'],
             error_out=False)

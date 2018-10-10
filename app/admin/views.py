@@ -46,7 +46,7 @@ def submitArticles():
 
         if source and articleType:
             article = Article(title=title, content=content, summary=summary,
-                              source=source, articleType=articleType)
+                              source=source, articleType=articleType, is_published=2)
             db.session.add(article)
             db.session.commit()
             flash(u'发表博文成功！', 'success')
@@ -79,6 +79,7 @@ def editArticles(id):
         article.content = form.content.data
         article.summary = form.summary.data
         article.update_time = datetime.utcnow()
+        article.is_published = 2
         db.session.add(article)
         db.session.commit()
         flash(u'博文更新成功！', 'success')
