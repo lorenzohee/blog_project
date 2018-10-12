@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
+    <meta name="description" content="Petpet是一个综合性宠物网站，在这里你可以获取你需要的宠物信息。讨论宠物爱好,交流宠物信息。" />
     <title>
         {% block title %}
         {{ BlogInfo.query.first().title }}
