@@ -51,10 +51,16 @@ def articleTypes(id):
 def article_sources(id):
     BlogView.add_view(db)
     page = request.args.get('page', 1, type=int)
-    pagination = Source.query.get_or_404(id).articles.order_by(
-            Article.create_time.desc()).paginate(
-            page, per_page=current_app.config['ARTICLES_PER_PAGE'],
-            error_out=False)
+    if current_user.is_authenticated:
+        pagination = Source.query.get_or_404(id).articles.order_by(
+                Article.create_time.desc()).paginate(
+                page, per_page=current_app.config['ARTICLES_PER_PAGE'],
+                error_out=False)
+    else:
+        pagination = Source.query.get_or_404(id).articles.filter(Article.is_published == 2).order_by(
+                Article.create_time.desc()).paginate(
+                page, per_page=current_app.config['ARTICLES_PER_PAGE'],
+                error_out=False)
     articles = pagination.items
     return render_template('index.html', articles=articles,
                            pagination=pagination, endpoint='.article_sources',
