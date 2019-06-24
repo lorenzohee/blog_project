@@ -1,6 +1,7 @@
 # coding:utf-8
 from importlib import reload
 import sys
+import json
 reload(sys)
 import requests
 from flask import render_template, redirect, flash, \
@@ -33,7 +34,7 @@ def get_tasks():
         display = ['ymd', 'week', 'type', 'fx', 'fl', 'high', 'low', 'notice']
         weather_info = ' '.join(today_weather[p] for p in display if today_weather.get(p, None))
         print(weather_dict)
-        return str(weather_dict)
+        return json.dumps(weather_dict)
 
     except Exception as exception:
         print(exception)
