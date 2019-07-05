@@ -5,7 +5,7 @@ from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from flask_moment import Moment
 from config import Config
-
+from .websocket.webSocketServer import WebSocketServer
 
 db = SQLAlchemy()
 bootstrap = Bootstrap()
@@ -25,6 +25,10 @@ def create_app():
     bootstrap.init_app(app)
     moment.init_app(app)
     login_manager.init_app(app)
+
+    # init websocket
+    server = WebSocketServer()
+    server.begin()
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
