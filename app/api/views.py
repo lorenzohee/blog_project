@@ -3,12 +3,17 @@ from importlib import reload
 import sys
 import json
 reload(sys)
+from datetime import datetime
 import requests
 from flask import render_template, redirect, flash, \
     url_for, request, current_app, jsonify
 from . import api
 
-@api.route('/tasks', methods=['GET'])
+from ..models import Task
+from .forms import TaskSubmitForm
+from .. import db
+
+@api.route('/tasks/weather', methods=['GET'])
 def get_tasks():
     city_code = "101120201"
     weather_url = 'http://t.weather.sojson.com/api/weather/city/{}'.format(city_code)
@@ -39,3 +44,29 @@ def get_tasks():
     except Exception as exception:
         print(exception)
         return {}
+
+@api.route('/tasks', methods=['GET', 'POST'])
+def getArticles():
+    page = request.args.get('page', 1, type=int)
+    pagination = Task.query.order_by(Task.create_time.desc()).paginate(
+            page, per_page=current_app.config['ARTICLES_PER_PAGE'],
+            error_out=False)
+    tasks = pagination.items
+    return jsonify([i.serialize for i in tasks])
+
+@api.route('/tasks/<int:id>', methods=['GET', 'POST'])
+def articleDetailById(id):
+    task = Task.query.get_or_404(id)
+    return jsonify(task.serialize)
+
+@api.route('/tasks_delete/<int:id>', methods=['GET'])
+def delArticleById(id):
+    task = Task.query.get_or_404(id)
+    db.session.delete(task)
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        return {"code": "error", "message": u'删除失败！'}
+    else:
+        return {"code": "success", "message": u'删除成功！'}

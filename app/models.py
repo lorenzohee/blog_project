@@ -406,3 +406,42 @@ class BlogView(db.Model):
         view.num_of_view += 1
         db.session.add(view)
         db.session.commit()
+
+class Task(db.Model):
+    __tablename__ = 'tasks'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(64))
+    content = db.Column(db.Text)
+    is_finished = db.Column(db.Integer)
+    create_time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    alert_time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    task_type = db.Column(db.String(64))
+
+    @staticmethod
+    def insert_task():
+        task_info = Task(title=u'test',
+                                  content=u'如果一个人不善待他的猫和狗，我才不关心他到底信仰什么。——亚伯拉罕·林肯')
+        db.session.add(task_info)
+        db.session.commit()
+    def __repr__(self):
+        return '<Task %r>' % self.title
+    @property
+    def serialize(self):
+        return {
+          'id': self.id,
+          'title': self.title,
+          'content': self.content,
+          'is_finished': self.is_finished,
+          'create_time': dump_datetime(self.create_time),
+          'alert_time': dump_datetime(self.alert_time),
+          'user_id': self.user_id,
+          'task_type': self.task_type
+        }
+
+
+def dump_datetime(value):
+    """Deserialize datetime object into string form for JSON processing."""
+    if value is None:
+        return None
+    return value.strftime("%Y-%m-%d %H:%M:%S")

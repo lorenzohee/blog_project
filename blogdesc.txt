@@ -73,7 +73,7 @@ Date: 2016-03-08 13:00:51
 
 5.安装Blog_mini需求文件
 
-    python3的话建议直接执行命令: pip install flask flask-script  Flask-SQLAlchemy Flask-Migrate Flask-WTF Flask-Bootstrap WTForms SQLAlchemy wheel flask-login flask-moment ForgeryPy gunicorn
+    python3的话建议直接执行命令: pip install flask flask-script  Flask-SQLAlchemy Flask-Migrate Flask-WTF Flask-Bootstrap WTForms SQLAlchemy wheel flask-login flask-moment ForgeryPy gunicorn flask-cors
 
 6.使用sqlite作为默认数据库来运行Blog_mini
 
@@ -143,3 +143,5 @@ Date: 2016-03-08 13:00:51
 
 修改:
 1. 更改article的字段,方便以后通过爬虫爬来的文章进行发布---20181001
+
+2. 添加跨域支持，在上面第五步中添加flask-cors, app/__init__.py 中添加CORS支持

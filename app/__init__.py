@@ -5,7 +5,8 @@ from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from flask_moment import Moment
 from config import Config
-from .websocket.webSocketServer import WebSocketServer
+from flask_cors import CORS
+# from .websocket.webSocketServer import WebSocketServer
 
 db = SQLAlchemy()
 bootstrap = Bootstrap()
@@ -17,6 +18,7 @@ login_manager.login_view = 'auth.login'
 
 def create_app():
     app = Flask(__name__)
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
     app.config.from_object(Config)
     Config.init_app(app)
     CSRFProtect(app)
@@ -27,8 +29,8 @@ def create_app():
     login_manager.init_app(app)
 
     # init websocket
-    server = WebSocketServer()
-    server.begin()
+    # server = WebSocketServer()
+    # server.begin()
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
