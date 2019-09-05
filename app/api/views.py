@@ -10,11 +10,11 @@ from flask import render_template, redirect, flash, \
 from . import api
 
 from ..models import Task
-from .forms import TaskSubmitForm
-from .. import db
+from .forms import TaskSubmitForm, TaskCommonForm
+from .. import db, csrf
 
 @api.route('/tasks/weather', methods=['GET'])
-def get_tasks():
+def get_weather():
     city_code = "101120201"
     weather_url = 'http://t.weather.sojson.com/api/weather/city/{}'.format(city_code)
     try:
@@ -35,31 +35,56 @@ def get_tasks():
         # "notice": "阴晴之间，谨防紫外线侵扰"
         # }
         today_weather = weather_dict.get('data').get('forecast')[0]
-
         display = ['ymd', 'week', 'type', 'fx', 'fl', 'high', 'low', 'notice']
         weather_info = ' '.join(today_weather[p] for p in display if today_weather.get(p, None))
-        print(weather_dict)
         return json.dumps(weather_dict)
 
     except Exception as exception:
         print(exception)
         return {}
 
+@csrf.exempt
 @api.route('/tasks', methods=['GET', 'POST'])
 def getArticles():
-    page = request.args.get('page', 1, type=int)
-    pagination = Task.query.order_by(Task.create_time.desc()).paginate(
-            page, per_page=current_app.config['ARTICLES_PER_PAGE'],
-            error_out=False)
-    tasks = pagination.items
-    return jsonify([i.serialize for i in tasks])
+    if request.method == 'POST':
+        data = request.get_data()
+        form = TaskCommonForm(request.form)
+        if form.validate():
+            task = Task(title=request.json.get('title'),
+                content = request.json.get('content'))
+            db.session.add(task)
+            db.session.commit()
+            return jsonify(task.serialize)
+        if form.errors:
+            return jsonify({"code": form.errors})
+    else:
+        page = request.args.get('page', 1, type=int)
+        pagination = Task.query.order_by(Task.create_time.desc()).paginate(
+                page, per_page=current_app.config['ARTICLES_PER_PAGE'],
+                error_out=False)
+        tasks = pagination.items
+        return jsonify([i.serialize for i in tasks])
 
-@api.route('/tasks/<int:id>', methods=['GET', 'POST'])
+@csrf.exempt
+@api.route('/tasks/<int:id>', methods=['GET', 'PUT'])
 def articleDetailById(id):
     task = Task.query.get_or_404(id)
-    return jsonify(task.serialize)
+    if request.method == 'PUT':
+        task.title = request.json.get('title')
+        task.content = request.json.get('content')
+        alert_time = request.json.get('alert_time')
+        if alert_time:
+            task.alert_time = datetime.strptime(alert_time, "%Y-%m-%d %H:%M:%S")
+        if request.json.get('is_finished'):
+            task.is_finished = request.json.get('is_finished')
+        db.session.add(task)
+        db.session.commit()
+        return jsonify(task.serialize)
+    else:
+        return jsonify(task.serialize)
 
-@api.route('/tasks_delete/<int:id>', methods=['GET'])
+@csrf.exempt
+@api.route('/tasks_delete/<int:id>', methods=['DELETE'])
 def delArticleById(id):
     task = Task.query.get_or_404(id)
     db.session.delete(task)

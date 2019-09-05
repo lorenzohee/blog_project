@@ -11,6 +11,7 @@ from flask_cors import CORS
 db = SQLAlchemy()
 bootstrap = Bootstrap()
 moment = Moment()
+csrf = CSRFProtect()
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
@@ -21,7 +22,8 @@ def create_app():
     cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
     app.config.from_object(Config)
     Config.init_app(app)
-    CSRFProtect(app)
+
+    csrf.init_app(app)
 
     db.init_app(app)
     bootstrap.init_app(app)
