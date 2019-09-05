@@ -50,8 +50,14 @@ def getArticles():
         data = request.get_data()
         form = TaskCommonForm(request.form)
         if form.validate():
-            task = Task(title=request.json.get('title'),
-                content = request.json.get('content'))
+            alert_time = request.json.get('alert_time')
+            if alert_time:
+                task = Task(title=request.json.get('title'),
+                    content = request.json.get('content'),
+                    alert_time = datetime.strptime(alert_time, "%Y-%m-%d %H:%M:%S"))
+            else:
+                task = Task(title=request.json.get('title'),
+                    content = request.json.get('content'))
             db.session.add(task)
             db.session.commit()
             return jsonify(task.serialize)
