@@ -9,7 +9,8 @@ from flask import render_template, redirect, flash, \
     url_for, request, current_app, jsonify
 from . import api
 
-from ..models import Task
+from ..models import Task, Article, ArticleType, article_types, Comment, \
+    Follow, User, Source, BlogView
 from .forms import TaskSubmitForm, TaskCommonForm
 from .. import db, csrf
 
@@ -45,7 +46,7 @@ def get_weather():
 
 @csrf.exempt
 @api.route('/tasks', methods=['GET', 'POST'])
-def getArticles():
+def getTasks():
     if request.method == 'POST':
         data = request.get_data()
         form = TaskCommonForm(request.form)
@@ -73,7 +74,7 @@ def getArticles():
 
 @csrf.exempt
 @api.route('/tasks/<int:id>', methods=['GET', 'PUT'])
-def articleDetailById(id):
+def taskDetailById(id):
     task = Task.query.get_or_404(id)
     if request.method == 'PUT':
         task.title = request.json.get('title')
@@ -91,7 +92,7 @@ def articleDetailById(id):
 
 @csrf.exempt
 @api.route('/tasks_delete/<int:id>', methods=['DELETE'])
-def delArticleById(id):
+def delTaskById(id):
     task = Task.query.get_or_404(id)
     db.session.delete(task)
     try:
